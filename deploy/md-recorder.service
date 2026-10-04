@@ -1,0 +1,29 @@
+[Unit]
+Description=Binance UM 微結構錄製器 (crypto-datalake)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=/home/anson/crypto-datalake
+Environment=MD_ROOT=/srv/nas/marketdata
+Environment=MD_SPOOL=/home/anson/crypto-datalake/spool
+Environment=PATH=/home/anson/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/home/anson/.local/bin/uv run --quiet /home/anson/crypto-datalake/recorder/record.py
+Restart=always
+RestartSec=10
+KillSignal=SIGTERM
+TimeoutStopSec=90
+# 資源硬上限：避免像先前 gateway cron 那樣把記憶體吃光拖垮整台機器
+MemoryHigh=2G
+MemoryMax=3G
+TasksMax=256
+Nice=5
+IOSchedulingClass=best-effort
+IOSchedulingPriority=5
+StandardOutput=append:/home/anson/crypto-datalake/logs/recorder.log
+StandardError=append:/home/anson/crypto-datalake/logs/recorder.log
+
+[Install]
+WantedBy=default.target

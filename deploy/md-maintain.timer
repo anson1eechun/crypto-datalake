@@ -1,0 +1,10 @@
+[Unit]
+Description=每小時觸發 crypto-datalake 維護
+
+[Timer]
+OnCalendar=*:12:00
+Persistent=true
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

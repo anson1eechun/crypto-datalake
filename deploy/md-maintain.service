@@ -1,0 +1,17 @@
+[Unit]
+Description=crypto-datalake 每小時正規化與目錄更新
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/anson/crypto-datalake
+Environment=MD_ROOT=/srv/nas/marketdata
+ExecStart=/home/anson/crypto-datalake/tools/maintain.sh
+# 卡住的執行必須自己死掉，否則 oneshot 服務會讓 timer 永遠不再觸發
+TimeoutStartSec=2700
+# 上一輪還沒跑完就不重疊啟動；記憶體硬上限避免堆積
+MemoryHigh=3G
+MemoryMax=4G
+TasksMax=64
+Nice=10
+StandardOutput=append:/home/anson/crypto-datalake/logs/maintain.log
+StandardError=append:/home/anson/crypto-datalake/logs/maintain.log
